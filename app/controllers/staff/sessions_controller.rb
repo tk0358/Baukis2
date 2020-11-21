@@ -9,7 +9,7 @@ class Staff::SessionsController < Staff::Base
   end
 
   def create
-    @form = Staff::LoginForm.new(params(login_form_params)
+    @form = Staff::LoginForm.new(login_form_params)
     if @form.email.present?
       staff_member = StaffMember.find_by("LOWER(email) = ?", @form.email.downcase)
     end
