@@ -4,7 +4,7 @@
 div#wrapper {
   div#container {
     div#generic-form {
-      width: 480px;
+      width: 530px;
       margin: $wide * 2 auto;
       padding: $wide * 2;
       border-radius: $wide;
@@ -23,6 +23,9 @@ div#wrapper {
             padding-left: $narrow;
             color: $red;
           }
+        }
+        div.input-block {
+          input { margin-right: $narrow * 2; }
         }
         div.notes {
           text-align: right;
