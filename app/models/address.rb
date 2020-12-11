@@ -24,5 +24,5 @@ class Address < ApplicationRecord
   )
 
   validates :postal_code, format: { with: /\A\d{7}\z/, allow_blank: true }
-  validates: prefecture, inclusion: { in: PREFECTURE_NAMES, allow_blank: true }
+  validates :prefecture, inclusion: { in: PREFECTURE_NAMES, allow_blank: true }
 end
