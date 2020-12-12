@@ -10,6 +10,28 @@ feature "職員による顧客管理" do
     login_as_staff_member(staff_member)
   end
 
+  scenario "職員が顧客（基本情報のみ）を追加する" do
+    click_link "顧客管理"
+    first("div.links").click_link "新規登録"
+
+    fill_in "メールアドレス", with: "ruru@example.com"
+    fill_in "パスワード", with: "pw"
+    fill_in "form_customer_family_name", with: "加勢田"
+    fill_in "form_customer_given_name", with: "るる"
+    fill_in "form_customer_family_name_kana", with: "カセダ"
+    fill_in "form_customer_given_name_kana", with: "ルル"
+    fill_in "生年月日", with: "2011-11-29"
+    choose "女性"
+    click_button "登録"
+
+    new_customer = Customer.order(:id).last
+    expect(new_customer.email).to eq("ruru@example.com")
+    expect(new_customer.birthday).to eq(Date.new(2011, 11, 29))
+    expect(new_customer.gender).to eq("female")
+    expect(new_customer.home_address).to be_nil
+    expect(new_customer.work_address).to be_nil
+  end
+
   scenario "職員が顧客、自宅住所、勤務先を追加する" do
     click_link "顧客管理"
     first("div.links").click_link "新規登録"
@@ -22,6 +44,7 @@ feature "職員による顧客管理" do
     fill_in "form_customer_given_name_kana", with: "ルル"
     fill_in "生年月日", with: "2011-11-29"
     choose "女性"
+    check "自宅住所を入力する"
     within("fieldset#home-address-fields") do
       fill_in "郵便番号", with: "4780001"
       select "愛知県", from: "都道府県"
@@ -29,6 +52,7 @@ feature "職員による顧客管理" do
       fill_in "町域、番地等", with: "朝倉１−１−１"
       fill_in "建物名、部屋番号等", with: ""
     end
+    check "勤務先を入力する"
     within("fieldset#work-address-fields") do
       fill_in "会社名", with: "るる広告"
       fill_in "部署名", with: ""
