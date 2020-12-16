@@ -14,4 +14,10 @@ class Customer < ApplicationRecord
     before: ->(obj) { Date.today },
     allow_blank: true
   }
+
+  before_save do
+    self.birth_year = birthday.year
+    self.birth_month = birthday.month
+    self.birth_mday = birthday.mday
+  end
 end
