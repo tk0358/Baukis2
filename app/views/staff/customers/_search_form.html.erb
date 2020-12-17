@@ -8,6 +8,7 @@
     m << p.drop_down_list_block(:birth_year, "誕生年：", (1900..Time.current.year).to_a.reverse)
     m << p.drop_down_list_block(:birth_month, "誕生月：", 1..12)
     m << p.drop_down_list_block(:birth_mday, "誕生日：", 1..31)
+    m << p.drop_down_list_block(:gender, "性別：", [ ["男性", "male"], ["女性", "female"]])
     m.br
     m.div do
       m << p.drop_down_list_block(:address_type, "住所の選択範囲：",
