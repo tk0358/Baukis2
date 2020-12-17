@@ -4,7 +4,8 @@ class Staff::CustomerSearchForm
 
   attr_accessor :family_name_kana, :given_name_kana,
     :birth_year, :birth_month, :birth_mday, :gender,
-    :address_type, :prefecture, :city, :phone_number
+    :address_type, :prefecture, :city, :phone_number, :postal_code,
+    :last_four_digits_of_phone_number
 
   def search
     normalize_values
@@ -24,29 +25,35 @@ class Staff::CustomerSearchForm
     rel = rel.where(birth_mday: birth_mday) if birth_mday.present?
     rel = rel.where(gender: gender) if gender.present?
 
-    if prefecture.present? || city.present?
+    if prefecture.present? || city.present? || postal_code.present?
       case address_type
       when "home"
-        rel = rel.join(:home_address)
+        rel = rel.joins(:home_address)
       when "work"
-        rel = rel.join(:work_address)
+        rel = rel.joins(:work_address)
       when ""
-        rel = rel.join(:addresses)
+        rel = rel.joins(:addresses)
       else
         raise
       end
     end
 
     if prefecture.present?
-
       rel = rel.where("addresses.prefecture" => prefecture)
     end
 
     rel = rel.where("addresses.city" => city) if city.present?
 
+    rel = rel.where("addresses.postal_code" => postal_code) if postal_code.present?
+
     if phone_number.present?
       rel = rel.joins(:phones).where("phones.number_for_index" => phone_number)
     end
+
+    if last_four_digits_of_phone_number.present?
+      rel = rel.joins(:phones).where("RIGHT(phones.number_for_index, 4) = ?", last_four_digits_of_phone_number)
+    end
+
 
     rel = rel.distinct
 
@@ -57,6 +64,8 @@ class Staff::CustomerSearchForm
     self.family_name_kana = normalize_as_furigana(family_name_kana)
     self.given_name_kana = normalize_as_furigana(given_name_kana)
     self.city = normalize_as_name(city)
-    self.phone_number = normalize_as_phone_number(phone_number).try(:gsub, /\D/, "")
+    self.phone_number = normalize_as_phone_number(phone_number)&.gsub(/\D/, "")
+    self.last_four_digits_of_phone_number = normalize_as_phone_number(last_four_digits_of_phone_number)&.gsub(/\D/, "")
+    self.postal_code = normalize_as_postal_code(postal_code)
   end
 end
