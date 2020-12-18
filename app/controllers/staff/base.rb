@@ -1,4 +1,5 @@
 class Staff::Base < ApplicationController
+  before_action :check_source_ip_address
   before_action :authorize
   before_action :check_account
   before_action :check_timeout
@@ -7,6 +8,10 @@ class Staff::Base < ApplicationController
     if session[:staff_member_id]
       @current_staff_member ||= StaffMember.find_by(id: session[:staff_member_id])
     end
+  end
+
+  private def check_source_ip_address
+    raise IpAddressRejected unless AllowedSource.include?("staff", request.ip)
   end
 
   helper_method :current_staff_member
