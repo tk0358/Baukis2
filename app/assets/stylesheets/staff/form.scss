@@ -23,6 +23,7 @@ div#wrapper {
             padding-left: $narrow;
             color: $red;
           }
+          span.instruction { font-size: $small; color: $dark_gray; }
         }
         div.input-block {
           input { margin-right: $narrow * 2; }
@@ -49,6 +50,10 @@ div#wrapper {
         div.field_with_errors {
           display: inline;
           padding: 0;
+          label { color: $red; }
+          input { background-color: $pink; }
+        }
+        div.with-errors {
           label { color: $red; }
           input { background-color: $pink; }
         }
