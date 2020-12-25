@@ -30,4 +30,6 @@
   </table>
 
   <div class="description"><%= p.description %></div>
+
+  <%= render "entries_from" if @program.number_of_applicants > 0 %>
 </div>
