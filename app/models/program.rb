@@ -1,5 +1,5 @@
 class Program < ApplicationRecord
-  has_many :entries, dependent: :destroy
+  has_many :entries, dependent: :restrict_with_exception
   has_many :applicants, through: :entries, source: :customer
   belongs_to :registrant, class_name: "StaffMember"
 
@@ -66,9 +66,16 @@ class Program < ApplicationRecord
     allow_blank: true,
     if: ->(obj) { obj.application_start_time }
   }
+  validates :min_number_of_participants, :max_number_of_participants, numericality: { 
+    only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 1000, allow_blank: true
+  }
   validate do
     if min_number_of_participants && max_number_of_participants && min_number_of_participants > max_number_of_participants
       errors.add(:max_number_of_participants, :less_than_min_number)
     end
+  end
+
+  def deletable?
+    entries.empty?
   end
 end

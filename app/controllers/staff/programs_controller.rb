@@ -51,8 +51,12 @@ class Staff::ProgramsController < Staff::Base
 
   def destroy
     program = Program.find(params[:id])
-    program.destroy!
-    flash.notice = "プログラムを削除しました。"
+    if program.deletable?
+      program.destroy!
+      flash.notice = "プログラムを削除しました。"
+    else
+      flash.now = "このプログラムは削除できません。"
+    end
     redirect_to :staff_programs
   end
 end
