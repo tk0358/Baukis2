@@ -1,0 +1,3 @@
+class CustomerMessage < Message
+  
+end

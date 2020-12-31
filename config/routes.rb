@@ -48,6 +48,9 @@ Rails.application.routes.draw do
           patch :cancel
         end
       end
+      resources :messages, only: [ :new, :create ] do
+        post :confirm, on: :collection
+      end
     end
   end
 end
