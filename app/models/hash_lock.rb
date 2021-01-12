@@ -1,0 +1,2 @@
+class HashLock < ApplicationRecord
+end
