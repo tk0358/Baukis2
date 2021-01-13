@@ -1,10 +1,10 @@
 class Customer::MessagesController < Customer::Base
   def index
-    @messages = current_customer.inbound_messages.sorted.page(params[:page])
+    @messages = current_customer.inbound_messages.where(discarded: false).sorted.page(params[:page])
   end
 
   def show
-    @message = current_customer.inbound_messages.find(params[:id])
+    @message = current_customer.inbound_messages.where(discarded: false).find(params[:id])
   end
 
   def new
@@ -38,6 +38,12 @@ class Customer::MessagesController < Customer::Base
     end
   end
 
+  def destroy
+    message = current_customer.inbound_messages.find(params[:id])
+    message.update_column(:discarded, true)
+    flash.notice = "メッセージを削除しました。"
+    redirect_back(fallback_location: :customer_messages)
+  end
 
   private def customer_message_params
     params.require(:customer_message).permit(:subject, :body)
